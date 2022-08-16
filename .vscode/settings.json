@@ -1,0 +1,17 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "files.associations": {
+        "math.h": "c"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/tci/Ropes/prototype_gen_c",
+            "binaryPath": "/home/tci/Ropes/prototype_gen_c/main",
+            "binaryArgs": [
+                "-i",
+                "abc"
+            ]
+        }
+    ]
+}
