@@ -18,4 +18,7 @@
     err("Null Pointer Exception.")
 #define err_malloc \
     err("Failed on memory alloc.")
+#define __double_quote(str) #str
+#define err_out_of_range(var) \
+    err("Variable (" __double_quote(var) ") out of range")
 #endif // __err_h
