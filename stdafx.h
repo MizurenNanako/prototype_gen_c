@@ -6,6 +6,7 @@ typedef char bool;
 #define false 0
 
 typedef unsigned long long int ulli;
+typedef unsigned char byte;
 
 int main(int argc, char **argv);
 

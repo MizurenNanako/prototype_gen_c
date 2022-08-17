@@ -4,12 +4,12 @@
 #include "err.h"
 #include "help.h"
 
-char opts[][3][64] = {
-    {"-h", "--help", 0},
-    {"-r", "--recursive", 1},
-    {"-i", "--input", 2},
-    {"-o", "--output", 3},
-    {"-s", "--summarize", 4},
+char opts[][3][32] = {
+    {"-h", "--help", "\0"},
+    {"-r", "--recursive", "\1"},
+    {"-i", "--input", "\2"},
+    {"-o", "--output", "\3"},
+    {"-s", "--summarize", "\4"},
 };
 
 #define OPTSIZE sizeof(opts) / sizeof(opts[0])
@@ -37,6 +37,8 @@ ulli __f2(struct options_t *opt, ulli i, char **v)
         ++opt->filenames_size;
     char **tmp = (char **)
         malloc(opt->filenames_size * sizeof(char *));
+    if (!tmp)
+        err_malloc;
     if (q)
         memcpy(tmp, opt->filenames, q * sizeof(char *));
     for (k = i + 1; v[k] && v[k][0] != '-'; ++k, ++q)
@@ -79,6 +81,8 @@ struct options_t *opt_create(int argc, char **argv)
     struct options_t
         *r = (struct options_t *)
             malloc(sizeof(struct options_t));
+    if (!r)
+        err_malloc;
     r->filenames = NULL;
     r->filenames_size = 0;
     r->ishelp = false;
@@ -97,6 +101,7 @@ void opt_free(struct options_t *src)
     }*/
     free(src->filenames);
     free(src);
+    src = NULL;
 }
 
 int opt_parse(struct options_t *opt, int c, char **v)
@@ -121,16 +126,16 @@ int opt_parse(struct options_t *opt, int c, char **v)
         // parse short & long option
         for (j = 0; j < OPTSIZE; ++j)
         {
-            if (opts[j][0] &&
-                strcmp(v[i], opts[j][0]) == 0)
-                t = 0;
-            if (opts[j][1] &&
-                strcmp(v[i], opts[j][1]) == 0)
+            if (
+                (opts[j][0] &&
+                 strcmp(v[i], opts[j][0]) == 0) ||
+                (opts[j][1] &&
+                 strcmp(v[i], opts[j][1]) == 0))
                 t = 0;
             if (!t)
             {
                 // s set to 0 when error
-                s = optf[j](opt, i, v);
+                s = optf[(opts[j][2][0])](opt, i, v);
                 break;
             }
         }
