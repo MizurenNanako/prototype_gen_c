@@ -1,3 +1,6 @@
 *.o
 ./main
 .vscode/*.log
+a.out
+*.in
+*.out
