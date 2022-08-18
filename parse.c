@@ -88,9 +88,12 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
             token_type = tok_literal_str;
             break;
         }
-        if (isalpha(ch) || ch == '_') // maybe keyword, type
+        if (isalpha(ch) ||
+            ch == '_' ||
+            ch == '$') // maybe keyword, type
         {
-            while (p < end && (isalnum(ch) || ch == '_'))
+            while (p < end &&
+                   (isalnum(ch) || ch == '_' || ch == '$'))
             // get whole word
             {
                 *(p++) = ch;
@@ -161,4 +164,117 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
         err_out_of_range(p);
     *p = 0; // seal
     return token_type;
+}
+
+enum symbol_t get_symbol(char *token)
+{
+    if (!token || !token[0])
+        err_nullptr;
+    switch (token[0])
+    // !%&'()*+,-./:;<=>?@[\]^`{|}~
+    {
+        // brackets
+    case '(':
+        return sym_b_1L;
+    case ')':
+        return sym_b_1R;
+    case '[':
+        return sym_b_2L;
+    case ']':
+        return sym_b_2R;
+    case '{':
+        return sym_b_3L;
+    case '}':
+        return sym_b_3R;
+
+        // single
+    case '~':
+        return sym_tilde;
+    case '/':
+        return sym_slash;
+    case '\\':
+        return sym_backslash;
+    case '@':
+        return sym_at;
+    case ':':
+        return sym_colon;
+    case ';':
+        return sym_semicolon;
+    case '.':
+        return sym_dot;
+    case '*':
+        return sym_asterisk;
+    case '`':
+        return sym_grave;
+    case ',':
+        return sym_comma;
+    case '?':
+        return sym_question_mark;
+    case '&':
+        return sym_ampersand;
+    case '%':
+        return sym_percentage;
+    case '|':
+        return sym_pipe;
+    case '^':
+        return sym_circumflex;
+    case '\'':
+        return sym_apostrophe;
+
+        // special
+    case '!':
+        if (token[1])
+        {
+            if (token[1] == '=')
+                return sym_neq;
+            return sym_unknown;
+        }
+        return sym_exclamation_mark;
+    case '+':
+        if (token[1])
+        {
+            if (token[1] == '+')
+                return sym_increase;
+            return sym_unknown;
+        }
+        return sym_plus;
+    case '=':
+        if (token[1])
+        {
+            if (token[1] == '=')
+                return sym_eq;
+            return sym_unknown;
+        }
+        return sym_assign;
+    case '<':
+        if (token[1])
+        {
+            if (token[1] == '=')
+                return sym_leq;
+            return sym_unknown;
+        }
+        return sym_le;
+    case '>':
+        if (token[1])
+        {
+            if (token[1] == '=')
+                return sym_geq;
+            return sym_unknown;
+        }
+        return sym_ge;
+    case '-':
+        if (token[1])
+        {
+            if (token[1] == '-')
+                return sym_decrease;
+            if (token[1] == '>')
+                return sym_arrow;
+            return sym_unknown;
+        }
+        return sym_ge;
+
+        // something went wrong
+    default:
+        return sym_unknown;
+    }
 }

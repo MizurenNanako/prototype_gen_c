@@ -2,7 +2,8 @@
     "makefile.extensionOutputFolder": "./.vscode",
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "files.associations": {
-        "math.h": "c"
+        "math.h": "c",
+        "*.out": "c"
     },
     "makefile.launchConfigurations": [
         {

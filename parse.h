@@ -16,42 +16,45 @@ enum token_type_t
 
 enum symbol_t
 {
-    b_1L = '(', // parentheses
-    b_1R = ')', // parentheses
-    b_2L = '[', // brackets
-    b_2R = ']', // brackets
-    b_3L = '{', // braces
-    b_3R = '}', // braces
-    b_4L = '<', // angle brackets
-    b_4R = '>', // angle brackets
-    assign = '=',
-    eq = -1,  // ==
-    neq = -2, // !=
-    le = '<',
-    leq = -3, //<=
-    ge = '>',
-    geq = -4, // >=
-    tilde = '~',
-    dot = '.',
-    comma = ',',
-    colon = ':',
-    semicolon = ';',
-    backslash = '\\',
-    slash = '/',
-    dash = '-',
-    apostrophe = '`',
-    question_mark = '?',
-    exclamation_mark = '!',
-    asterisk = '*',
-    cross = '+',
-    ampersand = '&',
-    sharp = '#',
-    dollor = '$',
-    at = '@',
-    percentage = '%',
-    arrow = -5,    // ->
-    increase = -6, // ++
-    decrease = -7, // --
+    sym_unknown = 0, // something went wrong
+    sym_b_1L = '(',  // parentheses
+    sym_b_1R = ')',  // parentheses
+    sym_b_2L = '[',  // brackets
+    sym_b_2R = ']',  // brackets
+    sym_b_3L = '{',  // braces
+    sym_b_3R = '}',  // braces
+    sym_tilde = '~',
+    sym_dot = '.',
+    sym_comma = ',',
+    sym_colon = ':',
+    sym_semicolon = ';',
+    sym_backslash = '\\',
+    sym_slash = '/',
+    sym_grave = '`',
+    sym_apostrophe = '\'',
+    sym_question_mark = '?',
+    sym_asterisk = '*',
+    sym_ampersand = '&',
+    sym_sharp = '#',
+    sym_dollor = '$',
+    sym_at = '@',
+    sym_percentage = '%',
+    sym_pipe = '|',
+    sym_circumflex = '^',
+    // special
+    sym_assign = '=',
+    sym_eq = -1, // ==
+    sym_exclamation_mark = '!',
+    sym_neq = -2, // !=
+    sym_le = '<',
+    sym_leq = -3, //<=
+    sym_ge = '>',
+    sym_geq = -4, // >=
+    sym_plus = '+',
+    sym_increase = -6, // ++
+    sym_dash = '-',
+    sym_arrow = -5,    // ->
+    sym_decrease = -7, // --
 };
 
 void spit_char(FILE *file);
