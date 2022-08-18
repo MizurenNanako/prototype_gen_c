@@ -6,12 +6,12 @@
 
 enum token_type_t
 {
-    nil = 0,
-    keyword = 1,
-    symbol = 2,
-    userword = 3,
-    num_literal = 4,
-    str_literal = 5,
+    tok_unknown = 0, // something went wrong
+    tok_eof,
+    tok_word,
+    tok_symbol,
+    tok_literal_num,
+    tok_literal_str,
 };
 
 enum symbol_t
@@ -49,14 +49,16 @@ enum symbol_t
     dollor = '$',
     at = '@',
     percentage = '%',
-    arrow = -5, // ->
+    arrow = -5,    // ->
+    increase = -6, // ++
+    decrease = -7, // --
 };
 
 void spit_char(FILE *file);
-void eat_line(FILE *file);
 void spit_n_char(FILE *file, ulli n);
-void get_token(FILE *file, char *buf, ulli bufsize);
-enum token_type_t token_type(char *buf);
+void eat_line(FILE *file); // literal line
+enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
+enum symbol_t get_symbol(char *token);
 
 void parse(FILE *file);
 
