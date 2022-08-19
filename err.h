@@ -11,7 +11,7 @@
                 "\nin file: "__FILE__     \
                 "(line %i)\n"             \
                 "Exiting...\n",           \
-                __LINE__, ##__VA_ARGS__); \
+                ##__VA_ARGS__, __LINE__); \
         exit(EXIT_FAILURE);               \
     } while (0)
 #define err_nullptr \
