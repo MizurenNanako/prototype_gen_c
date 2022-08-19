@@ -57,6 +57,7 @@ enum symbol_t
     sym_dash = '-',
     sym_arrow = -5,    // ->
     sym_decrease = -7, // --
+    sym_veridic_param = -8, // ...
 };
 
 void spit_char(FILE *file);

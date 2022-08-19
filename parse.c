@@ -160,6 +160,35 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
             token_type = tok_word;
             break;
         }
+        if (ch == '.') // this is special (...)
+        {
+            *(p++) = '.';
+            ch = fgetc(file);
+            if (ch == '.')
+            {
+                ch = fgetc(file);
+                if (ch == '.')
+                {
+                    *(p++) = '.';
+                    *(p++) = '.';
+                    token_type = tok_symbol;
+                    break;
+                }
+                else
+                {
+                    spit_char(file);
+                    spit_char(file);
+                    token_type = tok_symbol;
+                    break;
+                }
+            }
+            else
+            {
+                spit_char(file);
+                token_type = tok_symbol;
+                break;
+            }
+        }
         if (isdigit(ch)) // must be number
         {
             t = 1; // dot mark
@@ -181,7 +210,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
         if (ispunct(ch)) // !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
         {
             // in fact:
-            // !"$%&'()*+,-.:;<=>?@[\]^`{|}~
+            // !"$%&'()*+,-:;<=>?@[\]^`{|}~
             *(p++) = ch;
             switch (ch)
             {
@@ -201,7 +230,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
                 s[1] = '-';
                 break;
             default:
-                // !"$%&'()*,.:;?@[\]^`{|}~
+                // !"$%&'()*,:;?@[\]^`{|}~
                 t = 0;
                 break;
             }
@@ -257,8 +286,6 @@ enum symbol_t get_symbol(char *token)
         return sym_colon;
     case ';':
         return sym_semicolon;
-    case '.':
-        return sym_dot;
     case '*':
         return sym_asterisk;
     case '`':
@@ -329,6 +356,15 @@ enum symbol_t get_symbol(char *token)
             return sym_unknown;
         }
         return sym_ge;
+    case '.':
+        if (token[1] && token[2])
+        {
+            if (token[1] == '.' &&
+                token[2] == '.')
+                return sym_veridic_param;
+            return sym_unknown;
+        }
+        return sym_dot;
 
         // something went wrong
     default:
