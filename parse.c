@@ -62,10 +62,68 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
         }
         if (isblank(ch)) // skip blank
             continue;
+        if (ch == '/') // test if is comment
+        {
+            // this is special!
+            ch = fgetc(file);
+            if (ch == '/') // comment line
+            {
+                eat_line(file);
+                continue;
+            }
+            else if (ch == '*') // comment block
+            {
+                t = 1;
+                while (t)
+                {
+                    ch = fgetc(file);
+                    if (feof(file)) // stop at eof
+                        break;
+                    if (ch == '*')
+                    {
+                        ch = fgetc(file);
+                        if (ch == '/')
+                            t = 0;
+                        else
+                            spit_char(file);
+                        continue;
+                    }
+                }
+                continue;
+            }
+            else
+            {
+                spit_char(file);
+                *(p++) = '/';
+                token_type = tok_symbol;
+                break;
+            }
+        }
         if (ch == '#') // skip preprocessor
         {
             eat_line(file);
             continue;
+        }
+        if (ch == '\'') // must be char literal
+        {
+            t = 1;
+            while (p < end && t)
+            {
+                *(p++) = ch;
+                ch = fgetc(file);
+                if (ch == '\\')
+                {
+                    *(p++) = ch;
+                    ch = fgetc(file);
+                }
+                else if (ch == '\'')
+                {
+                    t = 0;
+                }
+            }
+            *(p++) = ch;
+            token_type = tok_literal_char;
+            break;
         }
         if (ch == '\"') // must be str literal
         {
@@ -88,8 +146,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
             token_type = tok_literal_str;
             break;
         }
-        if (isalpha(ch) ||
-            ch == '_' ||
+        if (isalpha(ch) || ch == '_' ||
             ch == '$') // maybe keyword, type
         {
             while (p < end &&
@@ -124,7 +181,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
         if (ispunct(ch)) // !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
         {
             // in fact:
-            // !"$%&'()*+,-./:;<=>?@[\]^`{|}~
+            // !"$%&'()*+,-.:;<=>?@[\]^`{|}~
             *(p++) = ch;
             switch (ch)
             {
@@ -144,7 +201,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
                 s[1] = '-';
                 break;
             default:
-                // !"$%&'()*,./:;?@[\]^`{|}~
+                // !"$%&'()*,.:;?@[\]^`{|}~
                 t = 0;
                 break;
             }

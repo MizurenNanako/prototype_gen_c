@@ -140,7 +140,7 @@ int opt_parse(struct options_t *opt, int c, char **v)
             }
         }
         if (t || !s)
-            err("Wrong option %%%i: %s\n"
+            err("Wrong option $%i: %s\n"
                 "Try --help",
                 i, v[i]);
         i = s;

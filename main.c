@@ -6,13 +6,14 @@
 #include <string.h>
 #include "err.h"
 
-#include "test.out"
-char tag[] = "?Ew+1$";
+#include "test.h"
 
 int main(int argc, char **argv)
 {
     struct options_t *opt = opt_create(argc, argv);
-    test_get_token(opt);
+    if (opt->filenames_size != 1)
+        err("One file required"); 
+    test_get_token(opt->prog_name, opt->filenames[0]);
     opt_free(opt);
     return 0;
 }

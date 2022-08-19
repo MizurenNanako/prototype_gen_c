@@ -12,6 +12,7 @@ enum token_type_t
     tok_symbol,
     tok_literal_num,
     tok_literal_str,
+    tok_literal_char,
 };
 
 enum symbol_t
@@ -23,13 +24,14 @@ enum symbol_t
     sym_b_2R = ']',  // brackets
     sym_b_3L = '{',  // braces
     sym_b_3R = '}',  // braces
-    sym_tilde = '~',
-    sym_dot = '.',
+
     sym_comma = ',',
+    sym_dot = '.',
+    sym_slash = '/',
     sym_colon = ':',
     sym_semicolon = ';',
     sym_backslash = '\\',
-    sym_slash = '/',
+    sym_tilde = '~',
     sym_grave = '`',
     sym_apostrophe = '\'',
     sym_question_mark = '?',
