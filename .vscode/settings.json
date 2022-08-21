@@ -1,10 +1,10 @@
 {
     "makefile.extensionOutputFolder": "./.vscode",
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "files.associations": {
         "math.h": "c",
         "*.out": "c",
-        "stdafx.h": "c"
+        "stdafx.h": "c",
+        "test.h": "c"
     },
     "makefile.launchConfigurations": [
         {

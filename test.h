@@ -3,6 +3,7 @@
 #include "options.h"
 #include "stack.h"
 #include "parse.h"
+#include "functool.h"
 
 int test_get_token(char *prog_name, char *target_name)
 {
