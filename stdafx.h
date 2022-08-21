@@ -1,6 +1,8 @@
 #ifndef __stdafx_h
 #define __stdafx_h
 
+#include <stddef.h>
+
 typedef char bool;
 #define true 1
 #define false 0
