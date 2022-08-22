@@ -5,24 +5,26 @@
 
 struct stack_t
 {
-    ulli size;
-    ulli _max_size;
+    size_t size;
+    size_t _max_size;
     byte *data;
 };
 
-struct stack_t *sta_create(void);
-void sta_free(struct stack_t *src);
-void sta_push_s(struct stack_t *dst, void *src, ulli size);
-void sta_pop_s(struct stack_t *src, ulli size);
-void *sta_top_s(struct stack_t *src, ulli size);
+struct stack_t *stack_create(void);
+void stack_free(struct stack_t *src);
+void stack_push_s(struct stack_t *dst, void *src, size_t size);
+void stack_pop_s(struct stack_t *src, size_t size);
+void *stack_top_s(struct stack_t *src, size_t size);
 
-#define sta_push(stack, ptr_src) \
-    sta_push_s(stack, (void *)ptr_src, sizeof(*ptr_src))
-#define sta_pop(stack, type) \
-    sta_pop_s(stack, sizeof(type))
-#define sta_top(stack, type) \
-    (type *)sta_top_s(stack, sizeof(type))
-#define sta_top_v(stack, type) \
-    *sta_top(stack, type)
+#define stack_push(stack, ptr_src) \
+    stack_push_s(stack, (void *)ptr_src, sizeof(*ptr_src))
+#define stack_pop(stack, type) \
+    stack_pop_s(stack, sizeof(type))
+// @return pointer to data
+#define stack_top(stack, type) \
+    ((type *)stack_top_s(stack, sizeof(type)))
+// @return value of data 
+#define stack_top_v(stack, type) \
+    *stack_top(stack, type)
 
 #endif // __stack_h
