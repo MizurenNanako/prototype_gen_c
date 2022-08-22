@@ -2,6 +2,12 @@
 #include <stdlib.h>
 #include "err.h"
 
+#define __reset_traveler(list)         \
+    {                                  \
+        list->traveler = list->sentry; \
+        list->traveler_pos &= 0x00;    \
+    }
+
 struct list_t *list_create(__dealloc_func_t dealloc_func)
 {
     struct list_t *l =
@@ -20,6 +26,7 @@ struct list_t *list_create(__dealloc_func_t dealloc_func)
     l->sentry = n;
     l->size = 0;
     l->traveler = l->sentry;
+    l->traveler_pos = 0;
     l->__data_dealloc_func = dealloc_func;
     return l;
 }
@@ -50,6 +57,8 @@ void list_clear(struct list_t *list)
     (list->__data_dealloc_func)(p1->data);
     free(p1);
     list->size &= 0x00;
+    list->traveler_pos &= 0x00;
+    list->traveler = list->sentry;
 }
 
 void list_free(struct list_t *list)
@@ -83,6 +92,8 @@ void list_pop_back(struct list_t *list)
     struct list_node_t *p = list->sentry->prev;
     if (p == p->next)
         err_out_of_range(index);
+    if (list->traveler == p)
+        __reset_traveler(list);
     p->next->prev = p->prev;
     p->prev->next = p->next;
     (list->__data_dealloc_func)(p->data);
@@ -122,6 +133,8 @@ void list_pop_front(struct list_t *list)
     struct list_node_t *p = list->sentry->next;
     if (p == p->prev)
         err_out_of_range(index);
+    if (list->traveler == p)
+        __reset_traveler(list);
     p->next->prev = p->prev;
     p->prev->next = p->next;
     (list->__data_dealloc_func)(p->data);
@@ -136,5 +149,56 @@ void *list_front_p(struct list_t *list)
     struct list_node_t *p = list->sentry->next;
     if (p == p->prev)
         err_out_of_range(index);
+    return p->data;
+}
+
+void *list_at_p(struct list_t *list, size_t index)
+{
+    if (!list)
+        err_nullptr;
+    if (index >= list->size)
+        err_out_of_range(index);
+    struct list_node_t *p;
+    size_t t = list->traveler_pos;
+    if (t && __absolute_dest(t, index) <= index / 2)
+    {
+        p = list->traveler;
+        while (t > index)
+        // from: trav, dir: prev
+        {
+            p = p->prev;
+            --t;
+        }
+        while (t < index)
+        // from: trav, dir: next
+        {
+            p = p->next;
+            ++t;
+        }
+    }
+    else if (index < list->size / 2)
+    // anti-clockwise
+    {
+        p = list->sentry->next;
+        t = 0;
+        while (t < index)
+        {
+            p = p->next;
+            ++t;
+        }
+    }
+    else
+    // clockwise
+    {
+        p = list->sentry->prev;
+        t = list->size - 1;
+        while (t > index)
+        {
+            p = p->prev;
+            --t;
+        }
+    }
+    list->traveler = p;
+    list->traveler_pos = t;
     return p->data;
 }
