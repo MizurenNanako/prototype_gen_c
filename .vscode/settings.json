@@ -4,7 +4,10 @@
         "math.h": "c",
         "*.out": "c",
         "stdafx.h": "c",
-        "test.h": "c"
+        "test.h": "c",
+        "stddef.h": "c",
+        "stdio.h": "c",
+        "list": "c"
     },
     "makefile.launchConfigurations": [
         {
