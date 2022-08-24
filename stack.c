@@ -11,9 +11,9 @@ struct stack_t *stack_create(void)
     if (!p)
         err_malloc;
     p->size = 0;
-    p->_max_size = 20;
+    p->_max_size = __STACK_INIT_SIZE;
     p->data = (byte *)
-        malloc(sizeof(byte) * 20);
+        malloc(sizeof(byte) * __STACK_INIT_SIZE);
     return p;
 }
 
@@ -22,6 +22,20 @@ void stack_free(struct stack_t *src)
     free(src->data);
     free(src);
     src = NULL;
+}
+
+void stack_reserve(struct stack_t *dst, size_t size)
+{
+    if (!dst)
+        err_nullptr;
+    if (size <= dst->_max_size)
+        return;
+    byte *t = (byte *)malloc(size);
+    if (!t)
+        err_malloc;
+    memcpy(t, dst->data, dst->size);
+    free(dst->data);
+    dst->data = t;
 }
 
 void stack_push_s(struct stack_t *dst, void *src, size_t size)
@@ -53,7 +67,7 @@ void stack_pop_s(struct stack_t *src, size_t size)
     if (!src)
         err_nullptr;
     src->size -= size;
-    if (src->_max_size > 32 &&
+    if (src->_max_size > 64 &&
         src->size < src->_max_size / 2)
     // free some memory
     {
