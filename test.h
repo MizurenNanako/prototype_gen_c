@@ -30,35 +30,35 @@ int test_get_token(char *prog_name, char *target_name)
 
 int test_stack()
 {
-    struct stack_t *s = sta_create();
+    struct stack_t *s = stack_create();
     int tmp;
     char *tmpc;
     tmpc = (char *)malloc(36);
-    tmp = 2, sta_push(s, &tmp);
-    tmp = -1, sta_push(s, &tmp);
-    tmp = 3, sta_push(s, &tmp);
+    tmp = 2, stack_push(s, &tmp);
+    tmp = -1, stack_push(s, &tmp);
+    tmp = 3, stack_push(s, &tmp);
     snprintf(tmpc, 36, "hello stack");
-    sta_push_s(s, tmpc, 12);
+    stack_push_s(s, tmpc, 12);
     snprintf(tmpc, 36, "pop stack");
-    sta_push_s(s, tmpc, 10);
+    stack_push_s(s, tmpc, 10);
     free(tmpc);
-    tmpc = (char *)sta_top_s(s, 10);
-    sta_pop_s(s, 10);
+    tmpc = (char *)stack_top_s(s, 10);
+    stack_pop_s(s, 10);
     puts(tmpc);
-    tmpc = (char *)sta_top_s(s, 12);
-    sta_pop_s(s, 12);
+    tmpc = (char *)stack_top_s(s, 12);
+    stack_pop_s(s, 12);
     puts(tmpc);
-    tmp = sta_top_v(s, int);
-    sta_pop(s, int);
+    tmp = stack_top_v(s, int);
+    stack_pop(s, int);
     printf("%i\n", tmp);
-    tmp = sta_top_v(s, int);
-    sta_pop(s, int);
+    tmp = stack_top_v(s, int);
+    stack_pop(s, int);
     printf("%i\n", tmp);
-    tmp = sta_top_v(s, int);
-    sta_pop(s, int);
+    tmp = stack_top_v(s, int);
+    stack_pop(s, int);
     printf("%i\n", tmp);
     printf("size of stack: %i\n", s->size);
-    sta_free(s);
+    stack_free(s);
 }
 
 int test_optparse(struct options_t *opts)

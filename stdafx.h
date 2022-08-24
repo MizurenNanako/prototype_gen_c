@@ -10,6 +10,9 @@ typedef char bool;
 typedef unsigned long long int ulli;
 typedef unsigned char byte;
 
+#define __absolute_dest(a, b) \
+    (((a) > (b)) ? ((a) - (b)) : ((b) - (a)))
+
 int main(int argc, char **argv);
 
 #endif //__stdafx_h
