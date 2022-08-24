@@ -8,6 +8,8 @@
         list->traveler_pos &= 0x00;    \
     }
 
+void __numb_func(void *p) {}
+
 struct list_t *list_create(__dealloc_func_t dealloc_func)
 {
     struct list_t *l =
@@ -27,7 +29,7 @@ struct list_t *list_create(__dealloc_func_t dealloc_func)
     l->size = 0;
     l->traveler = l->sentry;
     l->traveler_pos = 0;
-    l->__data_dealloc_func = dealloc_func;
+    l->__data_dealloc_func = dealloc_func ? dealloc_func : __numb_func;
     return l;
 }
 
@@ -35,7 +37,9 @@ void list_clear(struct list_t *list)
 {
     if (!list)
         err_nullptr;
-    struct list_node_t *p1, *p2, *pt;
+    register __dealloc_func_t df;
+    register struct list_node_t *p1, *p2, *pt;
+    df = list->__data_dealloc_func;
     pt = list->sentry;
     p1 = pt->next;
     p2 = pt->prev;
@@ -45,16 +49,16 @@ void list_clear(struct list_t *list)
     {
         pt = p1;
         p1 = p1->next;
-        (list->__data_dealloc_func)(pt->data);
+        df(pt->data);
         free(pt);
         if (p1 == p2)
             break;
         pt = p2;
         p2 = p2->prev;
-        (list->__data_dealloc_func)(pt->data);
+        df(pt->data);
         free(pt);
     }
-    (list->__data_dealloc_func)(p1->data);
+    df(p1->data);
     free(p1);
     list->size &= 0x00;
     list->traveler_pos &= 0x00;
@@ -72,6 +76,8 @@ void list_free(struct list_t *list)
 
 void list_push_back(struct list_t *list, void *data)
 {
+    if (!list || !data)
+        err_nullptr;
     struct list_node_t *p =
         (struct list_node_t *)
             malloc(sizeof(struct list_node_t));
@@ -113,6 +119,8 @@ void *list_back_p(struct list_t *list)
 
 void list_push_front(struct list_t *list, void *data)
 {
+    if (!list || !data)
+        err_nullptr;
     struct list_node_t *p =
         (struct list_node_t *)
             malloc(sizeof(struct list_node_t));
@@ -158,8 +166,8 @@ void *list_at_p(struct list_t *list, size_t index)
         err_nullptr;
     if (index >= list->size)
         err_out_of_range(index);
-    struct list_node_t *p;
-    size_t t = list->traveler_pos;
+    register struct list_node_t *p;
+    register size_t t = list->traveler_pos;
     if (t && __absolute_dest(t, index) <= index / 2)
     {
         p = list->traveler;
@@ -201,4 +209,69 @@ void *list_at_p(struct list_t *list, size_t index)
     list->traveler = p;
     list->traveler_pos = t;
     return p->data;
+}
+
+void list_insert_before(
+    struct list_t *list, size_t index, void *data)
+{
+    if (!data) // if(!list){...} is in at()
+        err_nullptr;
+    list_at_p(list, index);
+    struct list_node_t *p =
+        (struct list_node_t *)
+            malloc(sizeof(struct list_node_t));
+    if (!p)
+        err_malloc;
+    p->data = data;
+    struct list_node_t *t = list->traveler;
+    t->prev->next = p;
+    p->prev = t->prev;
+    p->next = t;
+    t->prev = p;
+    ++list->traveler_pos;
+    ++list->size;
+}
+
+void list_insert_after(
+    struct list_t *list, size_t index, void *data)
+{
+    if (!data) // if(!list){...} is in at()
+        err_nullptr;
+    list_at_p(list, index);
+    struct list_node_t *p =
+        (struct list_node_t *)
+            malloc(sizeof(struct list_node_t));
+    if (!p)
+        err_malloc;
+    p->data = data;
+    struct list_node_t *t = list->traveler;
+    t->next->prev = p;
+    p->next = t->next;
+    p->prev = t;
+    t->next = p;
+    ++list->size;
+}
+
+void list_delete_at(struct list_t *list, size_t index)
+{
+    (list->__data_dealloc_func)(list_remove_at(list, index));
+}
+
+void *list_remove_at(struct list_t *list, size_t index)
+{
+    // no need to check nullptr,
+    // list_at_p() will check it.
+    void *p = list_at_p(list, index);
+    struct list_node_t *t = list->traveler;
+    t->prev->next = t->next;
+    t->next->prev = t->prev;
+    if (--list->size)
+    {
+        list->traveler = t->prev;
+        --list->traveler_pos;
+    }
+    else
+        __reset_traveler(list);
+    free(t);
+    return p;
 }
