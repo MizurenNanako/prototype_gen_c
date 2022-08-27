@@ -449,6 +449,13 @@ void parse_func_def(FILE *f_in, FILE *f_out)
                     buffer[0] = 0;
                 buffer[1] = '\n';
                 buffer[2] = 0;
+                break;
+            case sym_assign:
+                buffer[1] = buffer[0];
+                buffer[0] = ' ';
+                buffer[2] = ' ';
+                buffer[3] = 0;
+                break;
             }
         }
         if (parse_level)
@@ -462,6 +469,9 @@ void parse_func_def(FILE *f_in, FILE *f_out)
             break;
 
         case tok_symbol:
+        case tok_literal_str:
+        case tok_literal_char:
+        case tok_literal_num:
             fprintf(f_out, "%s", buffer);
             break;
         }
