@@ -55,13 +55,13 @@ enum symbol_t
     sym_plus = '+',
     sym_increase = -6, // ++
     sym_dash = '-',
-    sym_arrow = -5,    // ->
-    sym_decrease = -7, // --
+    sym_arrow = -5,         // ->
+    sym_decrease = -7,      // --
     sym_veridic_param = -8, // ...
 };
 
-void spit_char(FILE *file);
-void spit_n_char(FILE *file, ulli n);
+void spit_char(FILE *file) __attribute__((always_inline));
+void spit_n_char(FILE *file, ulli n) __attribute__((always_inline));
 void eat_line(FILE *file); // literal line
 enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
 enum symbol_t get_symbol(char *token);

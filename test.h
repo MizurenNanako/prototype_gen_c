@@ -2,8 +2,43 @@
 #include <stdlib.h>
 #include "options.h"
 #include "stack.h"
+#include "list.h"
 #include "parse.h"
 #include "functool.h"
+
+int *newint(int x)
+{
+    int *p = (int *)malloc(sizeof(int));
+    *p = x;
+    return p;
+}
+
+int test_list()
+{
+    struct list_t *l = list_create(NULL);
+    list_push_back(l, "hello");
+    list_push_back(l, "there");
+    list_push_back(l, "right");
+    list_push_back(l, "something");
+    list_push_back(l, "addd");
+    list_push_back(l, "asdfg");
+    list_push_back(l, "qwe");
+    list_push_back(l, "zxcvbnm");
+    // while (l->size)
+    // {
+    //     printf("%s\n", list_front_p(l));
+    //     list_pop_front(l);
+    // }
+    list_delete_at(l, 5);
+    list_delete_at(l, 5);
+    list_delete_at(l, 5);
+    list_insert_before(l, 4, "five");
+    for (size_t i = 0; i < l->size; ++i)
+    {
+        printf("%s\n", list_at_p(l, i));
+    }
+    list_free(l);
+}
 
 int test_get_token(char *prog_name, char *target_name)
 {
