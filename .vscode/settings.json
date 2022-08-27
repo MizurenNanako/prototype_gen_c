@@ -23,7 +23,7 @@
             "binaryPath": "/home/tci/Repos/pure-c-project/prototype_gen_c/main",
             "binaryArgs": [
                 "-i",
-                "test.h"
+                "parse.h"
             ]
         }
     ]
