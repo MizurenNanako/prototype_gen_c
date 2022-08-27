@@ -14,8 +14,16 @@
             "cwd": "/home/tci/Ropes/prototype_gen_c",
             "binaryPath": "/home/tci/Ropes/prototype_gen_c/main",
             "binaryArgs": [
-                "-f",
-                "main.c"
+                "-i",
+                "test.h"
+            ]
+        },
+        {
+            "cwd": "/home/tci/Repos/pure-c-project/prototype_gen_c",
+            "binaryPath": "/home/tci/Repos/pure-c-project/prototype_gen_c/main",
+            "binaryArgs": [
+                "-i",
+                "test.h"
             ]
         }
     ]

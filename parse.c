@@ -29,17 +29,13 @@ void eat_line(FILE *file)
             {
                 ch = fgetc(file);
             } while (isblank(ch));
-            if (ch == '\n')
-            {
-                ++t;
-            }
-            else
+            if (ch != '\n')
                 spit_char(file);
             continue;
         }
         if (ch == '\n')
         {
-            --t;
+            t = 0;
             continue;
         }
     }
@@ -99,10 +95,51 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
                 break;
             }
         }
-        if (ch == '#') // skip preprocessor
+        if (ch == '#') // get preprocessor
         {
-            eat_line(file);
-            continue;
+            t = 1;
+            while (t)
+            {
+                ch = fgetc(file);
+                if (feof(file)) // stop at eof
+                    break;
+                if (isblank(ch)) // skip blank
+                {
+                    *(p++) = ch;
+                    ch = fgetc(file);
+                    if (isblank(ch))
+                    {
+                        do
+                        {
+                            ch = fgetc(file);
+                        } while (isblank(ch));
+                    }
+                    spit_char(file);
+                    continue;
+                }
+                if (ch == '\\')
+                {
+                    do
+                    {
+                        ch = fgetc(file);
+                    } while (isblank(ch));
+                    if (ch == '\n')
+                    {
+                        --p;
+                    }
+                    else
+                        spit_char(file);
+                    continue;
+                }
+                if (ch == '\n')
+                {
+                    t = 0;
+                    continue;
+                }
+                *(p++) = ch;
+            }
+            token_type = tok_preprocessor;
+            break;
         }
         if (ch == '\'') // must be char literal
         {

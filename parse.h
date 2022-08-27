@@ -13,6 +13,7 @@ enum token_type_t
     tok_literal_num,
     tok_literal_str,
     tok_literal_char,
+    tok_preprocessor,
 };
 
 enum symbol_t
@@ -60,8 +61,8 @@ enum symbol_t
     sym_veridic_param = -8, // ...
 };
 
-void spit_char(FILE *file) __attribute__((always_inline));
-void spit_n_char(FILE *file, ulli n) __attribute__((always_inline));
+void spit_char(FILE *file);
+void spit_n_char(FILE *file, ulli n);
 void eat_line(FILE *file); // literal line
 enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
 enum symbol_t get_symbol(char *token);
