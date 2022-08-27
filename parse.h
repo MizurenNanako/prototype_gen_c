@@ -6,8 +6,8 @@
 
 enum token_type_t
 {
-    tok_unknown = 0, // something went wrong
-    tok_eof,
+    tok_unknown = -1, // something went wrong
+    tok_eof = 0,
     tok_word,
     tok_symbol,
     tok_literal_num,
@@ -67,6 +67,6 @@ void eat_line(FILE *file); // literal line
 enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
 enum symbol_t get_symbol(char *token);
 
-void parse(FILE *file);
+void parse_func_def(FILE *file_in, FILE *file_out);
 
 #endif // __parse_h

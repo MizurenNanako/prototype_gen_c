@@ -46,7 +46,7 @@ int test_list()
 
 int test_get_token(char *prog_name, char *target_name)
 {
-    char tag[] = "?Ew+1$c#";
+    char tag[] = "Ew+1$c#";
     FILE *in = fopen(target_name, "r");
     if (!in)
         err("Failed to open %s", target_name);

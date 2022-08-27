@@ -408,3 +408,64 @@ enum symbol_t get_symbol(char *token)
         return sym_unknown;
     }
 }
+
+void parse_func_def(FILE *f_in, FILE *f_out)
+{
+    enum token_type_t tok_type, last_tok_type;
+    enum symbol_t sym_type, last_sym_type;
+    int parse_level;
+    char buffer[255];
+    parse_level = 0;
+    last_tok_type = tok_unknown;
+    last_sym_type = sym_unknown;
+    while (tok_type = get_token(f_in, buffer, 255))
+    {
+        if (tok_type == tok_symbol)
+        {
+            sym_type = get_symbol(buffer);
+            switch (sym_type)
+            {
+            case sym_b_3L:
+                ++parse_level;
+                break;
+            case sym_b_3R:
+                --parse_level;
+                buffer[0] = ';';
+                buffer[1] = '\n';
+                buffer[2] = 0;
+                break;
+            case sym_asterisk:
+                buffer[0] = ' ';
+                buffer[1] = '*';
+                buffer[2] = 0;
+                break;
+            case sym_comma:
+                buffer[0] = ',';
+                buffer[1] = ' ';
+                buffer[2] = 0;
+                break;
+            case sym_semicolon:
+                if (last_sym_type == sym_b_3R)
+                    buffer[0] = 0;
+                buffer[1] = '\n';
+                buffer[2] = 0;
+            }
+        }
+        if (parse_level)
+            continue;
+        switch (tok_type)
+        {
+        case tok_word:
+            if (last_tok_type == tok_type)
+                fputc(' ', f_out);
+            fprintf(f_out, "%s", buffer);
+            break;
+
+        case tok_symbol:
+            fprintf(f_out, "%s", buffer);
+            break;
+        }
+        last_tok_type = tok_type;
+        last_sym_type = sym_type;
+    }
+}
