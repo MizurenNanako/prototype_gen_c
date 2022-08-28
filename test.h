@@ -10,6 +10,16 @@
     newint(5);    \
     newint(6);
 
+int a[] = {1, 2, 3, 4};
+char b[][30] = {
+    "hello",
+    "test",
+};
+int c[][5] = {
+    {1, 2, 3, 4, 5},
+    {0, 9, 8, 7, 6},
+};
+
 int *newint(int x)
 {
     int *p = (int *)malloc(sizeof(int));
@@ -46,7 +56,7 @@ int test_list()
 
 int test_get_token(char *prog_name, char *target_name)
 {
-    char tag[] = "Ew+1$c#";
+    char tag[] = "Ekw+1$c#";
     FILE *in = fopen(target_name, "r");
     if (!in)
         err("Failed to open %s", target_name);

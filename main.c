@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     if (!in)
         err("Failed to open %s", opt->filenames[0]);
     // FILE *out = fopen("./output.txt", "w");
-    parse_func_def(in, stderr);
+    parse_def(in, stderr);
     fputc('\n', stderr);
     opt_free(opt);
     return 0;

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char default_prog_name[] = "prototype_gen_c";
+char *default_prog_name = "prototype_gen_c";
 
 void print_help(char *prog_name)
 {
