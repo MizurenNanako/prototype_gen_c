@@ -20,8 +20,6 @@ void print_help(char *prog_name)
             "Specify inputs; Use stdin without this tag.\n"
             "\t-r\t--recursive \t"
             "Enable recursion on folders.\n"
-            "\t-s\t--summarize \t"
-            "Output summarized to one file.\n"
             "\t-o\t--output <filename>\n\t\t\t\t"
             "Specify summarized output. (Default: stdout)\n"
             "\n"

@@ -674,6 +674,11 @@ void parse_def(FILE *f_in, FILE *f_out)
     def_type = def_not;
     while (tok_type = get_token(f_in, buffer, SHORTBUFSIZ))
     {
+        if (tok_type == tok_preprocessor)
+        {
+            fprintf(f_out, "#%s\n", buffer);
+            continue;
+        }
         if (tok_type == tok_symbol)
         {
             sym_type = get_symbol(buffer);
@@ -696,9 +701,12 @@ void parse_def(FILE *f_in, FILE *f_out)
                 eol = true;
                 break;
             case sym_asterisk:
-                buffer[0] = ' ';
-                buffer[1] = '*';
-                buffer[2] = 0;
+                if (last_tok_type != tok_symbol)
+                {
+                    buffer[0] = ' ';
+                    buffer[1] = '*';
+                    buffer[2] = 0;
+                }
                 break;
             case sym_comma:
                 buffer[0] = ',';
