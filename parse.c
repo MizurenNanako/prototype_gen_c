@@ -652,8 +652,8 @@ enum keyword_type_t get_keyword(char *token)
 
 void parse_def(FILE *f_in, FILE *f_out)
 {
-    char buffer[SHORTBUFSIZ];
-    char prepare[LINEBUFSIZ];
+    char buffer[BUFSIZ];
+    char prepare[BUFSIZ];
     enum token_type_t tok_type, last_tok_type;
     enum symbol_type_t sym_type, last_sym_type;
     int parse_level;
@@ -672,7 +672,7 @@ void parse_def(FILE *f_in, FILE *f_out)
     parse_level = 0;
     eol = false;
     def_type = def_not;
-    while (tok_type = get_token(f_in, buffer, SHORTBUFSIZ))
+    while (tok_type = get_token(f_in, buffer, BUFSIZ))
     {
         if (tok_type == tok_preprocessor)
         {
