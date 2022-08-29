@@ -14,7 +14,7 @@ struct options_t
     bool summarize;
 };
 
-struct options_t *opt_create(int argc, char **argv);
+struct options_t *opt_create(int argc, const char **argv);
 void opt_free(struct options_t *src);
 
 #endif //__options_h

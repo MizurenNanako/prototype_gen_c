@@ -27,6 +27,45 @@ int *newint(int x)
     return p;
 }
 
+int test_get_$(struct options_t *opt)
+{
+    FILE *out = stdout;
+    char tag[] = "Ew+1$c#";
+    if (opt->filenames_size < 1)
+        err("Atlease One file required");
+    for (size_t i = 0; i < opt->filenames_size; ++i)
+    {
+        FILE *in = fopen(opt->filenames[i], "r");
+        if (!in)
+            err("Failed to open %s", opt->filenames[i]);
+        fprintf(out, "// From file: %s\n", opt->filenames[i]);
+        while (!feof(in))
+        {
+            char buf[255];
+            int t = get_token(in, buf, 255);
+            fprintf(out, "type: %c\tinfo: %s\t", tag[t], buf);
+            switch (t)
+            {
+            case tok_symbol:
+                fprintf(out, "\tsym: %i", get_symbol(buf));
+                break;
+            case tok_word:
+                fprintf(out, "\ttype: %i", get_keyword(buf));
+                break;
+            case tok_literal_char:
+                fprintf(out, "\tvalue: %i", buf[0]);
+                break;
+            case tok_preprocessor:
+                fprintf(out, "\ttype: %i", get_prep_direc(buf));
+                break;
+            }
+            fprintf(out, "\n");
+        }
+        fputc('\n', out);
+        fclose(in);
+    }
+}
+
 int test_list()
 {
     struct list_t *l = list_create(NULL);

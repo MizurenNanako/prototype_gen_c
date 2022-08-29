@@ -6,3 +6,4 @@ a.out
 *.in
 *.out
 output.*
+testing_data

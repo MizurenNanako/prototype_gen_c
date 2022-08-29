@@ -11,7 +11,6 @@ enum token_type_t
 {
     tok_unknown = -1, // something went wrong
     tok_eof = 0,
-    tok_keyword,
     tok_word,
     tok_symbol,
     tok_literal_num,
@@ -115,12 +114,29 @@ enum symbol_type_t
     sym_veridic_param = -8, // ...
 };
 
+enum prep_direc_type_t
+{
+    prep_direc_unknown = -1,
+    prep_direc_define,
+    prep_direc_elif,
+    prep_direc_else,
+    prep_direc_endif,
+    prep_direc_error,
+    prep_direc_if,
+    prep_direc_ifdef,
+    prep_direc_ifndef,
+    prep_direc_include,
+    prep_direc_pragma,
+    prep_direc_undef,
+};
+
 void spit_char(FILE *file);
 void spit_n_char(FILE *file, ulli n);
 void eat_line(FILE *file); // literal line
 enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
-enum symbol_type_t get_symbol(char *token);
-enum keyword_type_t get_keyword(char *token);
+enum symbol_type_t get_symbol(const char *token);
+enum keyword_type_t get_keyword(const char *token);
+enum prep_direc_type_t get_prep_direc(const char *token);
 
 void parse_def(FILE *file_in, FILE *file_out);
 

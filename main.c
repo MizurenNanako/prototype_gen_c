@@ -7,9 +7,8 @@
 #include "err.h"
 #include "test.h"
 
-int main(int argc, char **argv)
+int run0(const struct options_t *opt)
 {
-    struct options_t *opt = opt_create(argc, argv);
     FILE *out;
     if (!opt->output_name)
     {
@@ -29,8 +28,22 @@ int main(int argc, char **argv)
         fprintf(out, "// From file: %s\n", opt->filenames[i]);
         parse_def(in, out);
         fputc('\n', out);
+        fclose(in);
     }
+}
 
+// ttest prep & keyword parser
+int run1(const struct options_t *opt)
+{
+    
+}
+
+int (*run)(const struct options_t *opt) = run0;
+
+int main(int argc, const char **argv)
+{
+    struct options_t *opt = opt_create(argc, argv);
+    run(opt);
     opt_free(opt);
     return 0;
 }

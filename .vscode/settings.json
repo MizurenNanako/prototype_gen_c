@@ -7,7 +7,9 @@
         "test.h": "c",
         "stddef.h": "c",
         "stdio.h": "c",
-        "list": "c"
+        "list": "c",
+        "parse.h": "c",
+        "string.h": "c"
     },
     "makefile.launchConfigurations": [
         {
@@ -23,7 +25,7 @@
             "binaryPath": "/home/tci/Repos/pure-c-project/prototype_gen_c/main",
             "binaryArgs": [
                 "-i",
-                "help.c"
+                "testing_data/marco.h"
             ]
         }
     ]

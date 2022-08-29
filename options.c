@@ -75,7 +75,7 @@ ulli (*optf[])(struct options_t *opt, ulli i, char **v) = {
 
 int opt_parse(struct options_t *opt, int c, char **v);
 
-struct options_t *opt_create(int argc, char **argv)
+struct options_t *opt_create(int argc, const char **argv)
 {
     // initialize
     struct options_t

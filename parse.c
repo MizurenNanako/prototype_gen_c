@@ -290,7 +290,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
     return token_type;
 }
 
-enum symbol_type_t get_symbol(char *token)
+enum symbol_type_t get_symbol(const char *token)
 {
     if (!token || !token[0])
         err_nullptr;
@@ -410,7 +410,7 @@ enum symbol_type_t get_symbol(char *token)
     }
 }
 
-enum keyword_type_t get_keyword(char *token)
+enum keyword_type_t get_keyword(const char *token)
 {
     if (!token || !token[0])
         err_nullptr;
@@ -650,7 +650,7 @@ enum keyword_type_t get_keyword(char *token)
     return kwd_unknown;
 }
 
-enum prep_direc_type_t get_prep_direc(char *token)
+enum prep_direc_type_t get_prep_direc(const char *token)
 {
     if (!token || !token[0])
         err_nullptr;
@@ -683,10 +683,10 @@ enum prep_direc_type_t get_prep_direc(char *token)
         switch (token[1])
         {
         case 'f':
+            if (isblank(token[2]))
+                return prep_direc_if;
             switch (token[2])
             {
-            case 0:
-                return prep_direc_if;
             case 'd':
                 if (!strncmp(token + 3, "ef", 2))
                     return prep_direc_ifdef;
