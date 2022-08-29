@@ -20,5 +20,7 @@
     err("Failed on memory alloc.")
 #define __double_quote(str) #str
 #define err_out_of_range(var) \
-    err("Variable (" __double_quote(var) ") out of range")
+    err("Variable (" __double_quote(var) ") out of range.")
+#define err_buffer_overflow(var) \
+    err("Buffer (" __double_quote(var) ") overflowed.")
 #endif // __err_h

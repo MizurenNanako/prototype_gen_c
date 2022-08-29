@@ -285,7 +285,7 @@ enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
         }
     }
     if (p >= end)
-        err_out_of_range(p);
+        err_buffer_overflow(get_token::buf);
     *p = 0; // seal
     return token_type;
 }
@@ -648,6 +648,71 @@ enum keyword_type_t get_keyword(char *token)
         return kwd_unknown;
     }
     return kwd_unknown;
+}
+
+enum prep_direc_type_t get_prep_direc(char *token)
+{
+    if (!token || !token[0])
+        err_nullptr;
+    switch (token[0])
+    {
+    case 'd': // define
+        if (!strncmp(token + 1, "efine", 5))
+            return prep_direc_define;
+        return prep_direc_unknown;
+    case 'e': // elif else endif error
+        switch (token[1])
+        {
+        case 'l':
+            if (!strncmp(token + 2, "if", 2))
+                return prep_direc_elif;
+            else if (!strncmp(token + 2, "se", 2))
+                return prep_direc_else;
+            return prep_direc_unknown;
+        case 'n':
+            if (!strncmp(token + 2, "dif", 3))
+                return prep_direc_endif;
+            return prep_direc_unknown;
+        case 'r':
+            if (!strncmp(token + 2, "ror", 3))
+                return prep_direc_error;
+            return prep_direc_unknown;
+        }
+        return prep_direc_unknown;
+    case 'i': // if ifdef ifndef include
+        switch (token[1])
+        {
+        case 'f':
+            switch (token[2])
+            {
+            case 0:
+                return prep_direc_if;
+            case 'd':
+                if (!strncmp(token + 3, "ef", 2))
+                    return prep_direc_ifdef;
+                return prep_direc_unknown;
+            case 'n':
+                if (!strncmp(token + 3, "def", 3))
+                    return prep_direc_ifndef;
+                return prep_direc_unknown;
+            }
+            return prep_direc_unknown;
+        case 'n':
+            if (!strncmp(token + 2, "clude", 5))
+                return prep_direc_include;
+            return prep_direc_unknown;
+        }
+        return prep_direc_unknown;
+    case 'p': // pragma
+        if (!strncmp(token + 1, "ragma", 5))
+            return prep_direc_pragma;
+        return prep_direc_unknown;
+    case 'u': // undef
+        if (!strncmp(token + 1, "ndef", 4))
+            return prep_direc_undef;
+        return prep_direc_unknown;
+    }
+    return prep_direc_unknown;
 }
 
 void parse_def(FILE *f_in, FILE *f_out)
