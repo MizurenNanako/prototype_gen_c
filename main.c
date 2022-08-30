@@ -6,7 +6,10 @@
 #include <string.h>
 #include "hash.h"
 #include "err.h"
+#include "functool.h"
 #include "test.h"
+
+PRINT_U128_U_IMPL
 
 int run0(const struct options_t *opt)
 {
@@ -40,7 +43,9 @@ int run1(const struct options_t *opt)
     {
         const char *h = opt->filenames[i];
         printf("%lu\n",
-               hash_cyclic_redundancy_check_64_ECMA(h));
+               hash_murmurhash3_x86_32(h, strlen(h), 0));
+        print_u128_u(hash_murmurhash3_x64_128(h, strlen(h), 0));
+        fputc('\n', stdout);
     }
 }
 
