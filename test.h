@@ -86,7 +86,7 @@ int test_list()
     list_delete_at(l, 5);
     list_delete_at(l, 5);
     list_insert_before(l, 4, "five");
-    for (size_t i = 0; i < l->size; ++i)
+    for (size_t i = 0; i < list_size(l); ++i)
     {
         printf("%s\n", list_at_p(l, i));
     }

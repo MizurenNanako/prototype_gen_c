@@ -4,6 +4,7 @@
 #include "parse.h"
 #include <stdio.h>
 #include <string.h>
+#include "hash.h"
 #include "err.h"
 #include "test.h"
 
@@ -32,13 +33,18 @@ int run0(const struct options_t *opt)
     }
 }
 
-// ttest prep & keyword parser
+// test prep & keyword parser
 int run1(const struct options_t *opt)
 {
-    
+    for (size_t i = 0; i < opt->filenames_size; ++i)
+    {
+        const char *h = opt->filenames[i];
+        printf("%lu\n",
+               hash_cyclic_redundancy_check_64_ECMA(h));
+    }
 }
 
-int (*run)(const struct options_t *opt) = run0;
+int (*run)(const struct options_t *opt) = run1;
 
 int main(int argc, const char **argv)
 {

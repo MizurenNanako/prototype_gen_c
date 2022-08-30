@@ -5,13 +5,13 @@ debug : main
 
 release : main
 
-main : main.o help.o options.o stack.o parse.o list.o
+main : main.o help.o options.o stack.o parse.o list.o hash.o
 
 clean : 
 	rm *.o
 
 test.h : stdafx.h options.c stack.c parse.c list.c err.h 
-main.c : stdafx.h test.h list.c
+main.c : stdafx.h test.h
 
 help.h : stdafx.h
 help.c : help.h 
@@ -27,3 +27,6 @@ parse.c : parse.h err.h
 
 list.h : stdafx.h
 list.c : list.h
+
+hash.h : stdafx.h
+hash.c : hash.h err.h
