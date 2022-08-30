@@ -6,9 +6,9 @@
 struct options_t
 {
     ulli filenames_size;
-    char **filenames;
-    char *prog_name;
-    char *output_name;
+    const char **filenames;
+    const char *prog_name;
+    const char *output_name;
     bool ishelp;
     bool recursive;
     bool summarize;

@@ -4,7 +4,7 @@
 
 char *default_prog_name = "prototype_gen_c";
 
-void print_help(char *prog_name)
+void print_help(const char *prog_name)
 {
     if (!prog_name)
     {

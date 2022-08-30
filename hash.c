@@ -46,7 +46,7 @@ uint64_t hash_polynomial_rolling_53(const unsigned char *str)
         err_nullptr;
     ulli r = 0ULL;
     ulli p = 1ULL;
-    while (str)
+    while (*str)
     {
         r += *(str++) * p;
         p *= 53ULL;
@@ -61,20 +61,23 @@ uint32_t hash_cyclic_redundancy_check_32(const unsigned char *str)
     if (!__crc32_table[1])
         __init_crc32_table();
     uint32_t i, crc = 0;
-    while (str)
+    while (*str)
         crc = __crc32_table[(crc ^ *(str++)) & 0xff] ^ (crc >> 8);
     return crc;
 }
 
-uint64_t hash_cyclic_redundancy_check_32(const unsigned char *str)
+uint64_t hash_cyclic_redundancy_check_64_ECMA(const unsigned char *str)
 {
     if (!str)
         err_nullptr;
     if (!__crc64_table_ECMA[1])
         __init_crc64_ECMA_table();
     unsigned int i, crc = 0;
-    while (str)
-        crc = __crc64_table_ECMA[(crc ^ *(str++)) & 0xff] ^ (crc >> 8);
+    while (*str)
+    {
+        crc = __crc64_table_ECMA[(crc ^ *str) & 0x1ff] ^ (crc >> 8);
+        ++str;
+    }
     return crc;
 }
 

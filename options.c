@@ -14,17 +14,17 @@ char opts[][3][32] = {
 
 #define OPTSIZE sizeof(opts) / sizeof(opts[0])
 
-ulli __f0(struct options_t *opt, ulli i, char **v)
+ulli __f0(struct options_t *opt, ulli i, const char **v)
 {
     print_help(opt->prog_name);
     return i;
 }
-ulli __f1(struct options_t *opt, ulli i, char **v)
+ulli __f1(struct options_t *opt, ulli i, const char **v)
 {
     opt->recursive = true;
     return i;
 }
-ulli __f2(struct options_t *opt, ulli i, char **v)
+ulli __f2(struct options_t *opt, ulli i, const char **v)
 {
     int k, q;
     if (v[i + 1] && v[i + 1][0] == '-')
@@ -35,7 +35,7 @@ ulli __f2(struct options_t *opt, ulli i, char **v)
         q = 0;
     for (k = i + 1; v[k] && v[k][0] != '-'; ++k)
         ++opt->filenames_size;
-    char **tmp = (char **)
+    const char **tmp = (const char **)
         malloc(opt->filenames_size * sizeof(char *));
     if (!tmp)
         err_malloc;
@@ -50,7 +50,7 @@ ulli __f2(struct options_t *opt, ulli i, char **v)
     opt->filenames = tmp;
     return k - 1;
 }
-ulli __f3(struct options_t *opt, ulli i, char **v)
+ulli __f3(struct options_t *opt, ulli i, const char **v)
 {
     if (v[i + 1] && v[i + 1][0] != '-')
     {
@@ -59,13 +59,13 @@ ulli __f3(struct options_t *opt, ulli i, char **v)
     }
     return 0;
 }
-ulli __f4(struct options_t *opt, ulli i, char **v)
+ulli __f4(struct options_t *opt, ulli i, const char **v)
 {
     opt->summarize = true;
     return i;
 }
 
-ulli (*optf[])(struct options_t *opt, ulli i, char **v) = {
+ulli (*optf[])(struct options_t *opt, ulli i, const char **v) = {
     __f0,
     __f1,
     __f2,
@@ -73,7 +73,7 @@ ulli (*optf[])(struct options_t *opt, ulli i, char **v) = {
     __f4,
 };
 
-int opt_parse(struct options_t *opt, int c, char **v);
+int opt_parse(struct options_t *opt, int c, const char **v);
 
 struct options_t *opt_create(int argc, const char **argv)
 {
@@ -104,7 +104,7 @@ void opt_free(struct options_t *src)
     src = NULL;
 }
 
-int opt_parse(struct options_t *opt, int c, char **v)
+int opt_parse(struct options_t *opt, int c, const char **v)
 {
     // tmp variable
     ulli i, j, t, s;
