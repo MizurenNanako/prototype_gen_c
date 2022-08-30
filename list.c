@@ -10,6 +10,22 @@
 
 void __numb_func(void *p) {}
 
+struct list_node_t
+{
+    struct list_node_t *prev;
+    struct list_node_t *next;
+    void *data;
+};
+
+struct list_t
+{
+    size_t size;
+    struct list_node_t *sentry;
+    struct list_node_t *traveler;
+    size_t traveler_pos;
+    __dealloc_func_t __data_dealloc_func;
+};
+
 struct list_t *list_create(__dealloc_func_t dealloc_func)
 {
     struct list_t *l =
@@ -216,7 +232,8 @@ void list_insert_before(
 {
     if (!data) // if(!list){...} is in at()
         err_nullptr;
-    list_at_p(list, index);
+    if (list->traveler_pos != index)
+        list_at_p(list, index);
     struct list_node_t *p =
         (struct list_node_t *)
             malloc(sizeof(struct list_node_t));
@@ -237,7 +254,8 @@ void list_insert_after(
 {
     if (!data) // if(!list){...} is in at()
         err_nullptr;
-    list_at_p(list, index);
+    if (list->traveler_pos != index)
+        list_at_p(list, index);
     struct list_node_t *p =
         (struct list_node_t *)
             malloc(sizeof(struct list_node_t));
