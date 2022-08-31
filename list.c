@@ -53,6 +53,8 @@ void list_clear(struct list_t *list)
 {
     if (!list)
         err_nullptr;
+    if (!list->size)
+        return;
     register __dealloc_func_t df;
     register struct list_node_t *p1, *p2, *pt;
     df = list->__data_dealloc_func;

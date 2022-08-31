@@ -3,6 +3,7 @@
 #include "options.h"
 #include "stack.h"
 #include "list.h"
+#include "hash.h"
 #include "parse.h"
 #include "functool.h"
 
@@ -63,6 +64,20 @@ int test_get_$(struct options_t *opt)
         }
         fputc('\n', out);
         fclose(in);
+    }
+}
+
+PRINT_U128_U_IMPL
+
+int test_murmurhash3(struct options_t *opt)
+{
+    for (size_t i = 0; i < opt->filenames_size; ++i)
+    {
+        const char *h = opt->filenames[i];
+        printf("%lu\n",
+               hash_murmurhash3_x86_32(h, strlen(h), 0));
+        print_u128_u(hash_murmurhash3_x64_128(h, strlen(h), 0));
+        fputc('\n', stdout);
     }
 }
 
@@ -145,7 +160,7 @@ int test_stack()
     tmp = stack_top_v(s, int);
     stack_pop(s, int);
     printf("%i\n", tmp);
-    printf("size of stack: %i\n", s->size);
+    printf("size of stack: %i\n", stack_size(s));
     stack_free(s);
 }
 

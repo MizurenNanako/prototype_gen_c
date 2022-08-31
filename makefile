@@ -5,7 +5,7 @@ debug : main
 
 release : main
 
-main : main.o help.o options.o stack.o parse.o list.o hash.o
+main : main.o help.o options.o stack.o parse.o list.o hash.o dictionary.o
 
 clean : 
 	rm *.o
@@ -26,7 +26,10 @@ parse.h : stdafx.h
 parse.c : parse.h err.h
 
 list.h : stdafx.h
-list.c : list.h
+list.c : list.h err.h
 
 hash.h : stdafx.h
 hash.c : hash.h err.h
+
+dictionary.h : stdafx.h
+dictionary.c : dictionary.h list.h err.h
