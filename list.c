@@ -8,7 +8,7 @@
         list->traveler_pos &= 0x00;    \
     }
 
-void __numb_func(void *p) {}
+static void __numb_func(void *p) {}
 
 struct list_node_t
 {

@@ -5,16 +5,14 @@
 
 #define __STACK_INIT_SIZE 16
 
-struct stack_t
-{
-    size_t size;
-    size_t _max_size;
-    byte *data;
-};
+struct stack_t;
 
-struct stack_t *stack_create(void);
+struct stack_t *stack_create(void) __attribute__((malloc));
 void stack_free(struct stack_t *src);
 void stack_reserve(struct stack_t *dst, size_t size);
+
+#define stack_size(stack) (*(size_t *)stack)
+
 void stack_push_s(struct stack_t *dst, void *src, size_t size);
 void stack_pop_s(struct stack_t *src, size_t size);
 void *stack_top_s(struct stack_t *src, size_t size);
@@ -26,7 +24,7 @@ void *stack_top_s(struct stack_t *src, size_t size);
 // @return pointer to data
 #define stack_top(stack, type) \
     ((type *)stack_top_s(stack, sizeof(type)))
-// @return value of data 
+// @return value of data
 #define stack_top_v(stack, type) \
     *stack_top(stack, type)
 

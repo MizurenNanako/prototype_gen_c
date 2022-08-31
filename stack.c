@@ -3,6 +3,13 @@
 #include <string.h>
 #include "err.h"
 
+struct stack_t
+{
+    size_t size;
+    size_t _max_size;
+    byte *data;
+};
+
 struct stack_t *stack_create(void)
 {
     struct stack_t *p =

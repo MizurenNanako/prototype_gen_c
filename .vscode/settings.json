@@ -9,7 +9,8 @@
         "stdio.h": "c",
         "list": "c",
         "parse.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "list.h": "c"
     },
     "makefile.launchConfigurations": [
         {

@@ -96,7 +96,7 @@ uint32_t hash_elf_unix(const unsigned char *str)
 
 uint64_t hash_djb2(const unsigned char *str)
 {
-    uint64_t hash = 5381;
+    uint64_t hash = 5381ULL;
     while (*str)
         hash = ((hash << 5) + hash) + *(str++);
     return hash;

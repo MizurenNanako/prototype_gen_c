@@ -4,8 +4,6 @@
 #include "stdafx.h"
 
 typedef void (*__dealloc_func_t)(void *);
-
-struct list_node_t;
 struct list_t;
 
 /**
