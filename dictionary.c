@@ -22,8 +22,9 @@
 
 typedef uint64_t __bitset_t;
 
-unsigned __calc_pos(char ch)
+__attribute__((always_inline)) unsigned __calc_pos(char ch)
 {
+    // calc the real mapping pos
     if (ch == '_')
         return 62;
     else if ((ch >= 'a') && (ch <= 'z'))
@@ -41,8 +42,25 @@ unsigned __calc_pos(char ch)
     else if (ch == '$')
         return 63;
     else
-        err_out_of_range(ch); // noreturn
-    return 0;                 // to avoid return check
+        return -1; // noreturn, should not be called
+}
+
+__attribute__((always_inline)) unsigned __count_1(__bitset_t bset)
+{
+    // count 1 in bitset
+    unsigned cnt = 0;
+    while (bset)
+    {
+        bset &= (bset - 1);
+        ++cnt;
+    }
+    return cnt;
+}
+
+__attribute__((flatten)) unsigned __count_1_before(__bitset_t bset, char ch)
+{
+    bset &= ((UINT64_C(1) << __calc_pos(ch)) - 1);
+    return __count_1(bset);
 }
 
 #define __BITSET_EMPTY UINT64_C(0)
