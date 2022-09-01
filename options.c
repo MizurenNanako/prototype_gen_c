@@ -4,7 +4,12 @@
 #include "err.h"
 #include "help.h"
 
-char opts[][3][32] = {
+// this stack memory will be used
+// if program path is .lt. PROG_PATH_LEN chars
+#define PROG_PATH_LEN 256
+char prog_path_stkmem[PROG_PATH_LEN];
+
+const char opts[][3][32] = {
     {"-h", "--help", "\0"},
     {"-r", "--recursive", "\1"},
     {"-i", "--input", "\2"},
@@ -85,6 +90,8 @@ struct options_t *opt_create(int argc, const char **argv)
         err_malloc;
     r->filenames = NULL;
     r->filenames_size = 0;
+    r->prog_name = NULL;
+    r->prog_path = NULL;
     r->ishelp = false;
     r->recursive = false;
     opt_parse(r, argc, argv);
@@ -100,6 +107,8 @@ void opt_free(struct options_t *src)
         free(src->filenames[n]);
     }*/
     free(src->filenames);
+    if (src->prog_path && src->prog_path != prog_path_stkmem)
+        free((void *)src->prog_path); // cast to non-const
     free(src);
     src = NULL;
 }
@@ -118,7 +127,21 @@ int opt_parse(struct options_t *opt, int c, const char **v)
 #endif
          --t)
         ;
-    opt->prog_name = v[0] + t + 1;
+    ++t;
+    opt->prog_name = v[0] + t;
+    if (t > PROG_PATH_LEN)
+    {
+        char *p = (char *)malloc(t * sizeof(char));
+        strncpy(p, v[0], t);
+        p[t] = 0;
+        opt->prog_path = p;
+    }
+    else
+    {
+        strncpy(prog_path_stkmem, v[0], t);
+        prog_path_stkmem[t] = 0;
+        opt->prog_path = prog_path_stkmem;
+    }
     // get options
     for (i = 1; i < c; ++i)
     {

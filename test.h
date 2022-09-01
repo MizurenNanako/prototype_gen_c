@@ -164,10 +164,11 @@ int test_stack()
     stack_free(s);
 }
 
-int test_optparse(struct options_t *opts)
+int test_optparse(const struct options_t *opts)
 {
     // test opt parser
     puts(opts->prog_name);
+    puts(opts->prog_path);
     for (int i = 0; i < opts->filenames_size; ++i)
     {
         printf("input: %s\n", opts->filenames[i]);
@@ -180,8 +181,4 @@ int test_optparse(struct options_t *opts)
         puts("recursive");
     else
         puts("non-recursive");
-    if (opts->summarize)
-        puts("summarize");
-    else
-        puts("non-summarize");
 }
