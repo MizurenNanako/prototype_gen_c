@@ -1,6 +1,7 @@
 #include "parse.h"
 #include <ctype.h>
 #include <string.h>
+#include "dictionary.h"
 #include "err.h"
 
 void spit_char(FILE *file)
@@ -715,28 +716,37 @@ enum prep_direc_type_t get_prep_direc(const char *token)
     return prep_direc_unknown;
 }
 
+enum __parser_state_t
+{
+    __psr_state_not,
+    __psr_state_func,
+    __psr_state_data,
+    __psr_state_var,
+    __psr_state_wait_semicolon,
+};
+
 void parse_def(FILE *f_in, FILE *f_out)
 {
+    // def
     char buffer[BUFSIZ];
     char prepare[BUFSIZ];
     enum token_type_t tok_type, last_tok_type;
     enum symbol_type_t sym_type, last_sym_type;
     int parse_level;
     bool eol;
-    enum
-    {
-        def_not,
-        def_func,
-        def_data,
-        def_var,
-        def_wait_semicolon,
-    } def_type;
+    enum __parser_state_t state;
+    struct dict_t *dict;
+
+    // init
     buffer[0] = prepare[0] = 0;
     last_tok_type = tok_unknown;
     last_sym_type = sym_unknown;
     parse_level = 0;
     eol = false;
-    def_type = def_not;
+    state = __psr_state_not;
+    dict = dict_create();
+
+    // parse
     while (tok_type = get_token(f_in, buffer, BUFSIZ))
     {
         if (tok_type == tok_preprocessor)
@@ -750,7 +760,7 @@ void parse_def(FILE *f_in, FILE *f_out)
             switch (sym_type)
             {
             case sym_b_1R:
-                def_type = def_func;
+                state = __psr_state_func;
                 break;
             case sym_b_3L:
                 ++parse_level;
@@ -760,9 +770,9 @@ void parse_def(FILE *f_in, FILE *f_out)
                 /* buffer[0] = ';';
                 buffer[1] = '\n';
                 buffer[2] = 0; */
-                if (def_type != def_func &&
-                    def_type != def_wait_semicolon)
-                    def_type = def_data;
+                if (state != __psr_state_func &&
+                    state != __psr_state_wait_semicolon)
+                    state = __psr_state_data;
                 eol = true;
                 break;
             case sym_asterisk:
@@ -783,8 +793,8 @@ void parse_def(FILE *f_in, FILE *f_out)
                     buffer[0] = 0;
                 buffer[1] = '\n';
                 buffer[2] = 0; */
-                if (def_type == def_wait_semicolon)
-                    def_type = def_not;
+                if (state == __psr_state_wait_semicolon)
+                    state = __psr_state_not;
                 eol = true;
                 break;
             case sym_assign:
@@ -793,7 +803,7 @@ void parse_def(FILE *f_in, FILE *f_out)
                 buffer[2] = ' ';
                 buffer[3] = 0; */
                 /* buffer[0] = 0; */
-                def_type = def_var;
+                state = __psr_state_var;
                 eol = true;
                 break;
             }
@@ -817,16 +827,16 @@ void parse_def(FILE *f_in, FILE *f_out)
             }
         else
         {
-            if (def_type == def_var)
+            if (state == __psr_state_var)
             {
                 fprintf(f_out, "%s %s;\n", "extern", prepare);
-                def_type = def_wait_semicolon;
+                state = __psr_state_wait_semicolon;
             }
-            else if (def_type != def_wait_semicolon &&
-                     def_type != def_not)
+            else if (state != __psr_state_wait_semicolon &&
+                     state != __psr_state_not)
             {
                 fprintf(f_out, "%s;\n", prepare);
-                def_type = def_not;
+                state = __psr_state_not;
             }
             prepare[0] = 0;
             eol = false;
@@ -834,4 +844,7 @@ void parse_def(FILE *f_in, FILE *f_out)
         last_tok_type = tok_type;
         last_sym_type = sym_type;
     }
+
+    // free
+    dict_free(dict);
 }
