@@ -9,7 +9,7 @@ void spit_char(FILE *file)
     fseek(file, -1, SEEK_CUR);
 }
 
-void spit_n_char(FILE *file, ulli n)
+void spit_n_char(FILE *file, size_t n)
 {
     fseek(file, -n, SEEK_CUR);
 }
@@ -43,7 +43,7 @@ void eat_line(FILE *file)
     }
 }
 
-enum token_type_t get_token(FILE *file, char *buf, ulli bufsize)
+enum token_type_t get_token(FILE *file, char *buf, size_t bufsize)
 {
     char *p, *end;
     int ch, t, s[5];

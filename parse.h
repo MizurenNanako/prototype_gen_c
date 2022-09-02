@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include <stdio.h>
+#include "_line_metadata.h"
 
 #define SHORTBUFSIZ 255
 #define LINEBUFSIZ 4196
@@ -17,6 +18,51 @@ enum token_type_t
     tok_literal_str,
     tok_literal_char,
     tok_preprocessor,
+};
+
+enum symbol_type_t
+{
+    sym_unknown = -1, // something went wrong
+    sym_b_1L = '(',   // parentheses
+    sym_b_1R = ')',   // parentheses
+    sym_b_2L = '[',   // brackets
+    sym_b_2R = ']',   // brackets
+    sym_b_3L = '{',   // braces
+    sym_b_3R = '}',   // braces
+
+    sym_comma = ',',
+    sym_dot = '.',
+    sym_slash = '/',
+    sym_colon = ':',
+    sym_semicolon = ';',
+    sym_backslash = '\\',
+    sym_tilde = '~',
+    sym_grave = '`',
+    sym_apostrophe = '\'',
+    sym_question_mark = '?',
+    sym_asterisk = '*',
+    sym_ampersand = '&',
+    sym_sharp = '#',
+    sym_dollor = '$',
+    sym_at = '@',
+    sym_percentage = '%',
+    sym_pipe = '|',
+    sym_circumflex = '^',
+    // special
+    sym_assign = '=',
+    sym_eq = -1, // ==
+    sym_exclamation_mark = '!',
+    sym_neq = -2, // !=
+    sym_le = '<',
+    sym_leq = -3, //<=
+    sym_ge = '>',
+    sym_geq = -4, // >=
+    sym_plus = '+',
+    sym_increase = -6, // ++
+    sym_dash = '-',
+    sym_arrow = -5,         // ->
+    sym_decrease = -7,      // --
+    sym_veridic_param = -8, // ...
 };
 
 enum keyword_type_t
@@ -69,51 +115,6 @@ enum keyword_type_t
     kwd__Thread_local,  // C11
 };
 
-enum symbol_type_t
-{
-    sym_unknown = -1, // something went wrong
-    sym_b_1L = '(',   // parentheses
-    sym_b_1R = ')',   // parentheses
-    sym_b_2L = '[',   // brackets
-    sym_b_2R = ']',   // brackets
-    sym_b_3L = '{',   // braces
-    sym_b_3R = '}',   // braces
-
-    sym_comma = ',',
-    sym_dot = '.',
-    sym_slash = '/',
-    sym_colon = ':',
-    sym_semicolon = ';',
-    sym_backslash = '\\',
-    sym_tilde = '~',
-    sym_grave = '`',
-    sym_apostrophe = '\'',
-    sym_question_mark = '?',
-    sym_asterisk = '*',
-    sym_ampersand = '&',
-    sym_sharp = '#',
-    sym_dollor = '$',
-    sym_at = '@',
-    sym_percentage = '%',
-    sym_pipe = '|',
-    sym_circumflex = '^',
-    // special
-    sym_assign = '=',
-    sym_eq = -1, // ==
-    sym_exclamation_mark = '!',
-    sym_neq = -2, // !=
-    sym_le = '<',
-    sym_leq = -3, //<=
-    sym_ge = '>',
-    sym_geq = -4, // >=
-    sym_plus = '+',
-    sym_increase = -6, // ++
-    sym_dash = '-',
-    sym_arrow = -5,         // ->
-    sym_decrease = -7,      // --
-    sym_veridic_param = -8, // ...
-};
-
 enum prep_direc_type_t
 {
     prep_direc_unknown = -1,
@@ -131,12 +132,13 @@ enum prep_direc_type_t
 };
 
 void spit_char(FILE *file);
-void spit_n_char(FILE *file, ulli n);
+void spit_n_char(FILE *file, size_t n);
 void eat_line(FILE *file); // literal line
-enum token_type_t get_token(FILE *file, char *buf, ulli bufsize);
+enum token_type_t get_token(FILE *file, char *buf, size_t bufsize);
 enum symbol_type_t get_symbol(const char *token);
 enum keyword_type_t get_keyword(const char *token);
 enum prep_direc_type_t get_prep_direc(const char *token);
+enum lgc_line_type_t get_logical_line(FILE *file, char *buf, size_t bufsize);
 
 void parse_def(FILE *file_in, FILE *file_out);
 

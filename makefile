@@ -33,3 +33,6 @@ hash.c : hash.h err.h
 
 dictionary.h : stdafx.h
 dictionary.c : dictionary.h list.h err.h
+
+_line_metadata.h : stdafx.h
+_line_metadata.c : _line_metadata.h list.h err.h

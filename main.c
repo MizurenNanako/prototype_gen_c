@@ -36,13 +36,12 @@ int run0(const struct options_t *opt)
 // test dictionary
 int run1(const struct options_t *opt)
 {
-    // struct dict_t *d = dict_create();
-    // printf("%i\n", dict_insert(d, "hello"));
-    // printf("%i\n", dict_insert(d, "hello"));
-    // printf("%i\n", dict_insert(d, "hello"));
-    // printf("%i\n", dict_insert(d, "hallo"));
-    // dict_free(d);
-    test_optparse(opt);
+    struct dict_t *d = dict_create();
+    printf("%i\n", dict_insert(d, "hello"));
+    printf("%i\n", dict_insert(d, "hello"));
+    printf("%i\n", dict_insert(d, "hello"));
+    printf("%i\n", dict_insert(d, "hallo"));
+    dict_free(d);
 }
 
 int (*run)(const struct options_t *opt) = run1;
