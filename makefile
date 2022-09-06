@@ -10,11 +10,13 @@ main : main.o help.o options.o stack.o parse.o list.o hash.o dictionary.o
 clean : 
 	rm *.o
 
+err.h : colordef.h
+
 test.h : stdafx.h options.c stack.c parse.c list.c err.h 
 main.c : stdafx.h test.h
 
 help.h : stdafx.h
-help.c : help.h 
+help.c : help.h colordef.h
 
 options.h : stdafx.h
 options.c : options.h err.h help.c

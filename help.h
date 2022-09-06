@@ -3,6 +3,6 @@
 
 #include "stdafx.h"
 
-void print_help(const char *prog_name);
+void print_help(const char *prog_name, bool nocolor);
 
 #endif //__help_h

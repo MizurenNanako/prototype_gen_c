@@ -3,16 +3,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#define err(MSG, ...)                     \
-    do                                    \
-    {                                     \
-        fprintf(stderr,                   \
-                "Error: " MSG             \
-                "\nin file: "__FILE__     \
-                "(line %i)\n"             \
-                "Exiting...\n",           \
-                ##__VA_ARGS__, __LINE__); \
-        exit(EXIT_FAILURE);               \
+
+#ifdef _WIN32
+#define NOCOLOR
+#endif
+#include "colordef.h"
+
+#define err(MSG, ...)                               \
+    do                                              \
+    {                                               \
+        fprintf(stderr,                             \
+                RED "Error: "                /**/   \
+                MAGENTA MSG "\n"             /**/   \
+                YELLOW "in function: "       /**/   \
+                HCYAN "%s\n"                 /**/   \
+                YELLOW "in file: "           /**/   \
+                HBLUE __FILE__ "(line %i)\n" /**/   \
+                RED "Exiting...\n"           /**/   \
+                NON,                                \
+                ##__VA_ARGS__, __func__, __LINE__); \
+        exit(EXIT_FAILURE);                         \
     } while (0)
 #define err_nullptr \
     err("Null Pointer Exception.")

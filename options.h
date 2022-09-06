@@ -9,9 +9,11 @@ struct options_t
     const char **filenames;
     const char *prog_name;
     const char *prog_path;
+    const char *shell_name;
     const char *output_name;
     bool ishelp;
     bool recursive;
+    bool nocolor;
 };
 
 struct options_t *opt_create(int argc, const char **argv);
