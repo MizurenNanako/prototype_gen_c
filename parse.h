@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include <stdio.h>
-#include "_line_metadata.h"
 
 #define SHORTBUFSIZ 255
 #define LINEBUFSIZ 4196
@@ -131,6 +130,23 @@ enum prep_direc_type_t
     prep_direc_undef,
 };
 
+enum lgc_line_type_t
+{
+    lgc_line_unknown = -1, // something went wrong
+    lgc_line_eof,
+    lgc_line_decl_func,
+    lgc_line_decl_var,
+    lgc_line_decl_enum,
+    lgc_line_decl_struct,
+    lgc_line_decl_union,
+    lgc_line_decl_type, // typedef
+    lgc_line_init_var,
+    lgc_line_decl_and_init_var,
+    lgc_line_preprocesser,
+};
+
+// begin private
+
 void spit_char(FILE *file);
 void spit_n_char(FILE *file, size_t n);
 void eat_line(FILE *file); // literal line
@@ -138,7 +154,10 @@ enum token_type_t get_token(FILE *file, char *buf, size_t bufsize);
 enum symbol_type_t get_symbol(const char *token);
 enum keyword_type_t get_keyword(const char *token);
 enum prep_direc_type_t get_prep_direc(const char *token);
-enum lgc_line_type_t get_logical_line(FILE *file, char *buf, size_t bufsize);
+enum lgc_line_type_t get_logical_line(
+    FILE *file, char *buf, size_t bufsize);
+
+// end private
 
 void parse_def(FILE *file_in, FILE *file_out);
 

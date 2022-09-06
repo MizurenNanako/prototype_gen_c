@@ -4,6 +4,50 @@
 #include "dictionary.h"
 #include "err.h"
 
+// begin _line_metadata
+
+struct _line_metadata_t
+{
+    size_t id_pos;
+    enum lgc_line_type_t line_type;
+    struct list_t *tokens; // str list
+};
+
+struct _line_metadata_t *_line_metadata__create()
+{
+    struct _line_metadata_t *p =
+        (struct _line_metadata_t *)
+            malloc(sizeof(struct _line_metadata_t));
+    if (!p)
+        err_malloc;
+    p->line_type = lgc_line_unknown;
+    p->tokens = list_create(free);
+    p->id_pos = ~0;
+    return p;
+}
+
+void _line_metadata__free(struct _line_metadata_t *lmd)
+{
+    if (!lmd)
+        err_nullptr;
+    list_free(lmd->tokens);
+    free(lmd);
+}
+
+void _line_metadata_append(struct _line_metadata_t *lmd,
+                           const char *token_copy, size_t token_len)
+{
+    if (!lmd)
+        err_nullptr;
+    char *p = (char *)malloc(token_len * sizeof(char));
+    if (!p)
+        err_malloc;
+    strncpy(p, token_copy, token_len);
+    list_push_back(lmd->tokens, p);
+}
+
+// end _line_metadata
+
 void spit_char(FILE *file)
 {
     fseek(file, -1, SEEK_CUR);
@@ -716,6 +760,36 @@ enum prep_direc_type_t get_prep_direc(const char *token)
     return prep_direc_unknown;
 }
 
+enum lgc_line_type_t get_logical_line(
+    FILE *file, char *buf, size_t bufsize)
+{
+    // def
+    struct _line_metadata_t *meta;
+    enum token_type_t tokt;
+    enum symbol_type_t symt;
+    enum keyword_type_t kwdt;
+    enum lgc_line_type_t lgct;
+    int parse_level; // to skip {}
+
+    // init
+    meta = _line_metadata__create();
+    tokt = tok_unknown;
+    symt = sym_unknown;
+    kwdt = kwd_unknown;
+    lgct = lgc_line_unknown;
+    parse_level = 0;
+
+    // read
+    while (tokt = get_token(file, buf, bufsize))
+    {
+    }
+
+    // free
+    _line_metadata__free(meta);
+}
+
+// the currently working parser
+
 enum __parser_state_t
 {
     __psr_state_not,
@@ -744,7 +818,6 @@ void parse_def(FILE *f_in, FILE *f_out)
     parse_level = 0;
     eol = false;
     state = __psr_state_not;
-    dict = dict_create();
 
     // parse
     while (tok_type = get_token(f_in, buffer, BUFSIZ))
@@ -844,7 +917,4 @@ void parse_def(FILE *f_in, FILE *f_out)
         last_tok_type = tok_type;
         last_sym_type = sym_type;
     }
-
-    // free
-    dict_free(dict);
 }
