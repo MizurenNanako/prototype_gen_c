@@ -37,14 +37,14 @@ int run0(const struct options_t *opt)
 int run1(const struct options_t *opt)
 {
     struct dict_t *d = dict_create();
-    printf("%i\n", dict_insert(d, "hello"));
-    printf("%i\n", dict_insert(d, "hello"));
+    printf("%i\n", dict_insert(d, "test_get_$"));
+    printf("%i\n", dict_insert(d, "test_get_$"));
     printf("%i\n", dict_insert(d, "hello"));
     printf("%i\n", dict_insert(d, "hallo"));
     dict_free(d);
 }
 
-int (*run)(const struct options_t *opt) = run1;
+int (*run)(const struct options_t *opt) = run0;
 
 int main(int argc, const char **argv)
 {

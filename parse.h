@@ -154,8 +154,9 @@ enum token_type_t get_token(FILE *file, char *buf, size_t bufsize);
 enum symbol_type_t get_symbol(const char *token);
 enum keyword_type_t get_keyword(const char *token);
 enum prep_direc_type_t get_prep_direc(const char *token);
-enum lgc_line_type_t get_logical_line(
-    FILE *file, char *buf, size_t bufsize);
+enum lgc_line_type_t get_logical_line(FILE *file,
+                                      char *buf, size_t bufsize,
+                                      char *token, size_t tokensize);
 
 // end private
 

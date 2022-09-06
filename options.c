@@ -14,7 +14,6 @@ const char opts[][3][32] = {
     {"-r", "--recursive", "\1"},
     {"-i", "--input", "\2"},
     {"-o", "--output", "\3"},
-    {"-s", "--summarize", "\4"},
 };
 
 #define OPTSIZE sizeof(opts) / sizeof(opts[0])
@@ -64,18 +63,12 @@ ulli __f3(struct options_t *opt, ulli i, const char **v)
     }
     return 0;
 }
-ulli __f4(struct options_t *opt, ulli i, const char **v)
-{
-    opt->summarize = true;
-    return i;
-}
 
 ulli (*optf[])(struct options_t *opt, ulli i, const char **v) = {
     __f0,
     __f1,
     __f2,
     __f3,
-    __f4,
 };
 
 int opt_parse(struct options_t *opt, int c, const char **v);

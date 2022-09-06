@@ -28,6 +28,8 @@ int *newint(int x)
     return p;
 }
 
+int test_get_$(struct options_t *opt);
+
 int test_get_$(struct options_t *opt)
 {
     FILE *out = stdout;
@@ -67,7 +69,7 @@ int test_get_$(struct options_t *opt)
     }
 }
 
-PRINT_U128_U_IMPL
+PRINT_U128_U_IMPL;
 
 int test_murmurhash3(struct options_t *opt)
 {

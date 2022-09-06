@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "dictionary.h"
+#include "list.h"
 #include "err.h"
 
 // begin _line_metadata
@@ -760,16 +761,19 @@ enum prep_direc_type_t get_prep_direc(const char *token)
     return prep_direc_unknown;
 }
 
-enum lgc_line_type_t get_logical_line(
-    FILE *file, char *buf, size_t bufsize)
+// todo : complete it
+enum lgc_line_type_t get_logical_line(FILE *file,
+                                      char *buf, size_t bufsize,
+                                      char *token, size_t tokensize)
 {
     // def
     struct _line_metadata_t *meta;
-    enum token_type_t tokt;
-    enum symbol_type_t symt;
-    enum keyword_type_t kwdt;
+    enum token_type_t tokt, ltokt;
+    enum symbol_type_t symt, lsymt;
+    enum keyword_type_t kwdt, lkwdt;
     enum lgc_line_type_t lgct;
     int parse_level; // to skip {}
+    // char stratch[SHORTBUFSIZ];
 
     // init
     meta = _line_metadata__create();
@@ -778,16 +782,56 @@ enum lgc_line_type_t get_logical_line(
     kwdt = kwd_unknown;
     lgct = lgc_line_unknown;
     parse_level = 0;
+    // *stratch = 0;
 
     // read
     while (tokt = get_token(file, buf, bufsize))
     {
+        if (tokt == tok_preprocessor)
+            // we has got whole lgc_line of the prep
+            return lgc_line_preprocesser;
+        if (tokt == tok_symbol)
+        {
+            symt = get_symbol(buf);
+            switch (symt)
+            {
+            case sym_b_3L:
+                ++parse_level;
+                break;
+            case sym_b_3R:
+                --parse_level;
+                buf[0] = 0;
+                break;
+            case sym_asterisk:
+                if (ltokt != tok_symbol)
+                {
+                    buf[0] = ' ';
+                    buf[1] = '*';
+                    buf[2] = 0;
+                }
+                break;
+            case sym_comma:
+                buf[0] = ',';
+                buf[1] = ' ';
+                buf[2] = 0;
+                break;
+            case sym_semicolon:
+                buf[0] = 0;
+                break;
+            case sym_assign:
+                buf[1] = buf[0];
+                buf[0] = ' ';
+                buf[2] = ' ';
+                buf[3] = 0;
+                /* buffer[0] = 0; */
+                break;
+            }
+        }
+
+        // clean
+        _line_metadata__free(meta);
     }
-
-    // free
-    _line_metadata__free(meta);
 }
-
 // the currently working parser
 
 enum __parser_state_t
@@ -818,6 +862,7 @@ void parse_def(FILE *f_in, FILE *f_out)
     parse_level = 0;
     eol = false;
     state = __psr_state_not;
+    dict = dict_create();
 
     // parse
     while (tok_type = get_token(f_in, buffer, BUFSIZ))
@@ -900,15 +945,29 @@ void parse_def(FILE *f_in, FILE *f_out)
             }
         else
         {
+            char *t1, *t2;
+            bool b1;
+            t1 = strchr(prepare, ' ');
+            t1 = t1 ? t1 + strspn(prepare, " *") + 1 : NULL;
+            t2 = t1 ? strpbrk(t1 + 1, " ;([{") : NULL;
+            b1 = t1 && t2;
+            if (b1)
+            {
+                strncpy(buffer, t1, (t2 - t1));
+                buffer[t2 - t1] = 0;
+                b1 = dict_insert(dict, buffer);
+            }
             if (state == __psr_state_var)
             {
-                fprintf(f_out, "%s %s;\n", "extern", prepare);
+                if (b1)
+                    fprintf(f_out, "%s %s;\n", "extern", prepare);
                 state = __psr_state_wait_semicolon;
             }
             else if (state != __psr_state_wait_semicolon &&
                      state != __psr_state_not)
             {
-                fprintf(f_out, "%s;\n", prepare);
+                if (b1)
+                    fprintf(f_out, "%s;\n", prepare);
                 state = __psr_state_not;
             }
             prepare[0] = 0;
@@ -917,4 +976,7 @@ void parse_def(FILE *f_in, FILE *f_out)
         last_tok_type = tok_type;
         last_sym_type = sym_type;
     }
+
+    // clean
+    dict_free(dict);
 }
